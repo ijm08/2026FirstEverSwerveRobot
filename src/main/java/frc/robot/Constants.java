@@ -26,8 +26,8 @@ public final class Constants {
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 0.5;
-    public static final double kMaxAngularSpeed = Math.PI/2; // radians per second
+    public static final double kMaxSpeedMetersPerSecond = 0.2;
+    public static final double kMaxAngularSpeed = Math.PI/4 ; // radians per second
 
     // Chassis configuration
     public static final double kTrackWidth = Units.inchesToMeters(24);
@@ -57,7 +57,8 @@ public final class Constants {
     public static final int FrontRightTurningCANId = 4;
     public static final int RearRightTurningCANId = 5;
 
-    public static final boolean kGyroReversed = false;
+    // -1 is reversed, 1 not
+    public static final double kGyroReversed = -1.0;
   }
 
   public static final class ModuleConstants {
@@ -84,10 +85,10 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 3;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-    public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-    public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
+    public static final double kMaxSpeedMetersPerSecond = 0.3;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 0.3;
+    public static final double kMaxAngularSpeedRadiansPerSecond = 0.3;
+    public static final double kMaxAngularSpeedRadiansPerSecondSquared = 0.3;
 
     public static final double kPXController = 1;
     public static final double kPYController = 1;
