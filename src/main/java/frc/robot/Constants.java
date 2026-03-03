@@ -26,8 +26,8 @@ public final class Constants {
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 0.2;
-    public static final double kMaxAngularSpeed = Math.PI/4 ; // radians per second
+    public static final double kMaxSpeedMetersPerSecond = 0.25;
+    public static final double kMaxAngularSpeed = Math.PI/5 ; // radians per second
 
     // Chassis configuration
     public static final double kTrackWidth = Units.inchesToMeters(24);
@@ -81,18 +81,27 @@ public final class Constants {
   public static final class OIConstants {
     public static final int kDriverControllerPort = 1;
     public static final double kDriveXYDeadband = 0.35;
-    public static final double kDriveZDeadband = 0.45;
+    public static final double kDriveZDeadband = 0.8;
   }
 
   public static final class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 0.3;
     public static final double kMaxAccelerationMetersPerSecondSquared = 0.3;
-    public static final double kMaxAngularSpeedRadiansPerSecond = 0.3;
-    public static final double kMaxAngularSpeedRadiansPerSecondSquared = 0.3;
+    public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI/5;
+    public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI/5;
 
     public static final double kPXController = 1;
     public static final double kPYController = 1;
-    public static final double kPThetaController = 1;
+    public static final double kPThetaController = 0.00;
+
+    //PID Gains
+    public static final double kProportionalGain = 0.04;
+    public static final double kIntegralGain = 0;
+    public static final double kDerivativeGain = 0;
+
+    public static final double kTurningProportionalGain = 1;
+    public static final double kTurningIntegralGain = 0;
+    public static final double kTurningDerivativeGain = 0; 
 
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(

@@ -20,6 +20,12 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Climber;
+import frc.robot.commands.MoveClimber;
+import frc.robot.commands.Shoot;
+import frc.robot.commands.MoveIntake;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -36,8 +42,9 @@ import java.util.List;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-
-
+  private final Shooter shooter = new Shooter();
+  private final Climber climber = new Climber();
+  private final Intake intake = new Intake();
 
   // The driver's controller
   Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort);
@@ -74,13 +81,16 @@ public class RobotContainer {
   private void configureButtonBindings() {
     new JoystickButton(m_driverController, 2)
         .whileTrue(new RunCommand(
-            () -> m_robotDrive.setX(),
+            () -> m_robotDrive.lockRobot(),
             m_robotDrive));
 
-    new JoystickButton(m_driverController, 1)
+    new JoystickButton(m_driverController, 8)
         .onTrue(new InstantCommand(
             () -> m_robotDrive.zeroHeading(),
             m_robotDrive));
+    new JoystickButton(m_driverController, 1)
+        .whileTrue(new Shoot(shooter, 0.5))
+        .onFalse(new InstantCommand(shooter::stop));
   }
 
   /**
@@ -101,14 +111,18 @@ public class RobotContainer {
         // Start at the origin facing the +X direction
         new Pose2d(0, 0, new Rotation2d(0)),
         // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(1, 0)),
+        List.of(new Translation2d(1, 0.01), new Translation2d(2, -0.01), new Translation2d(1, 0.01)),
         // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(2, 0, new Rotation2d(0)),
+        new Pose2d(0, 0, new Rotation2d(0)),
         config);
 
     var thetaController = new ProfiledPIDController(
         AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    // m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+    // m_robotDrive.zeroHeading();
+    // m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
 
     SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
         exampleTrajectory,
@@ -123,6 +137,7 @@ public class RobotContainer {
         m_robotDrive);
 
     // Reset odometry to the starting pose of the trajectory.
+    // m_robotDrive.zeroHeading();
     m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
