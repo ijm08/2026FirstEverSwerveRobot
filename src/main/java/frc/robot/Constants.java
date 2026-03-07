@@ -82,6 +82,15 @@ public final class Constants {
     public static final int kDriverControllerPort = 1;
     public static final double kDriveXYDeadband = 0.35;
     public static final double kDriveZDeadband = 0.8;
+  
+    // Buttons for everything
+    public static final int shootButton = 1;
+    public static final int lockRobotButton = 2;
+    public static final int zeroHeadingButton = 8;
+    public static final int extendIntakeButton = 3;
+    public static final int retractIntakeButton = 5;
+    public static final int extendClimberButton = 6;
+    public static final int retractClimberButton = 4;
   }
 
   public static final class AutoConstants {
@@ -110,5 +119,27 @@ public final class Constants {
 
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
+  }
+
+  public static final class subsystemCanIds {
+    // CAN IDs for all motors not part of the Swerve Subsystem
+    // Shooter
+    public static final int upperRightShooterMotor = 9;
+    public static final int upperLeftShooterMotor = 10;
+    public static final int lowerShooterMotor = 11;
+    // Intake (Arm and intake rollers)
+    public static final int intakeMotor = 12;
+    public static final int intakeArmMotor = 13;
+    // Climber 
+    public static final int climberMotorRight = 14;
+    public static final int climberMotorLeft = 15;
+  }
+  public static final class speeds {
+    // Im just picking random values for now since our team is quite slow at building stuff
+    public static final double shooterMotorSpeed = 0.5;
+    public static final double kickerMotorSpeed = 0.25;
+    public static final double intakeArmMotorSpeed = 0.2;
+    public static final double intakeRollerMotorSpeed = 0.2;
+    public static final double climberSpeed = 0.5;
   }
 }

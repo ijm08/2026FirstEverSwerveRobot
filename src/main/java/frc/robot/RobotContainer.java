@@ -19,10 +19,12 @@ import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.speeds;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.commands.MoveClimber;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.MoveIntake;
@@ -45,6 +47,13 @@ public class RobotContainer {
   private final Shooter shooter = new Shooter();
   private final Climber climber = new Climber();
   private final Intake intake = new Intake();
+
+  // Digital outputs to interface with an RGB strip connected
+  // to the arduino (if it gets set up), because....
+  // LEDS ARE SO COOL
+  private final LEDSubsystem lockRobotSignal = new LEDSubsystem(1);
+  private final LEDSubsystem zeroHeadingSignal = new LEDSubsystem(2);
+  private final LEDSubsystem shootSignal = new LEDSubsystem(3);
 
   // The driver's controller
   Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort);
@@ -79,18 +88,26 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driverController, 2)
+    new JoystickButton(m_driverController, OIConstants.lockRobotButton)
         .whileTrue(new RunCommand(
-            () -> m_robotDrive.lockRobot(),
-            m_robotDrive));
-
-    new JoystickButton(m_driverController, 8)
+            () -> m_robotDrive.lockRobot(lockRobotSignal),
+            m_robotDrive))
+        .onFalse(new InstantCommand(lockRobotSignal::turnOffChannel));
+    new JoystickButton(m_driverController, OIConstants.zeroHeadingButton)
         .onTrue(new InstantCommand(
-            () -> m_robotDrive.zeroHeading(),
+            () -> m_robotDrive.zeroHeading(zeroHeadingSignal),
             m_robotDrive));
-    new JoystickButton(m_driverController, 1)
-        .whileTrue(new Shoot(shooter, 0.5))
+    new JoystickButton(m_driverController, OIConstants.shootButton)
+        .whileTrue(new Shoot(shooter, shootSignal))
         .onFalse(new InstantCommand(shooter::stop));
+    new JoystickButton(m_driverController, OIConstants.extendIntakeButton)
+        .onTrue(new MoveIntake(intake, speeds.intakeArmMotorSpeed));
+    new JoystickButton(m_driverController, OIConstants.retractIntakeButton)
+        .onTrue(new MoveIntake(intake, -speeds.intakeArmMotorSpeed));
+    new JoystickButton(m_driverController, OIConstants.extendClimberButton)
+        .onTrue(new MoveClimber(climber, -speeds.climberSpeed));
+    new JoystickButton(m_driverController, OIConstants.retractClimberButton)
+        .onTrue(new MoveClimber(climber, speeds.climberSpeed));
   }
 
   /**
