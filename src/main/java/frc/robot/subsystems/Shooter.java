@@ -17,6 +17,7 @@ public class Shooter extends SubsystemBase {
     private SparkMaxConfig shooterRightMotorConfig = new SparkMaxConfig();
     private SparkMaxConfig shooterLeftMotorConfig = new SparkMaxConfig();
     private SparkMaxConfig kickerMotorConfig = new SparkMaxConfig();  
+    
     public Shooter() {
         shooterLeftMotorConfig.follow(rightShooterMotor, true);
         shooterLeftMotorConfig.apply(shooterLeftMotorConfig);

@@ -7,8 +7,7 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.SparkRelativeEncoder;
-
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import frc.robot.Constants.subsystemCanIds;
 import frc.robot.Constants.speeds;
 
@@ -16,12 +15,15 @@ public class Climber extends SubsystemBase {
     SparkMax rightMotor = new SparkMax(subsystemCanIds.climberMotorRight, MotorType.kBrushless);
     SparkMax leftMotor = new SparkMax(subsystemCanIds.climberMotorLeft, MotorType.kBrushless);
     
+    Spark pushingOutMotor = new Spark(1);
+    
     SparkMaxConfig rightMotorConfig = new SparkMaxConfig();
     SparkMaxConfig leftMotorConfig = new SparkMaxConfig();
     
     public Climber() {
         leftMotorConfig.follow(rightMotor, true);
-        leftMotorConfig.apply(leftMotorConfig);
+        leftMotorConfig.smartCurrentLimit(40);
+        rightMotorConfig.smartCurrentLimit(40);
         // Apply the configurations to the motor controllers
         leftMotor.configure(leftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         rightMotor.configure(rightMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -33,5 +35,10 @@ public class Climber extends SubsystemBase {
 
     public void stop() {
         rightMotor.set(0.0);
+    }
+
+    
+    public double getEncoderValues() {
+        return rightMotor.getEncoder().getPosition();
     }
 }

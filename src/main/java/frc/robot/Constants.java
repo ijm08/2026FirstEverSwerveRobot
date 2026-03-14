@@ -136,10 +136,20 @@ public final class Constants {
   }
   public static final class speeds {
     // Im just picking random values for now since our team is quite slow at building stuff
+    // Everything is pretty slow for now (should be)
     public static final double shooterMotorSpeed = 0.5;
     public static final double kickerMotorSpeed = 0.25;
     public static final double intakeArmMotorSpeed = 0.2;
-    public static final double intakeRollerMotorSpeed = 0.2;
+    public static final double intakeRollerMotorSpeed = -0.2;
     public static final double climberSpeed = 0.5;
+  }
+  public static final class encoderPositions {
+    // Random numbers for now
+    public static final double climberExtended = -0.67;
+    public static final double climberRetracted = 0.067;
+    public static final double climberEncoderTolerance = 0.00;
+    public static final double intakeExtended = -0.25;
+    public static final double intakeRetracted = 0.00;
+    public static final double intakeTolerance = 0.067; 
   }
 }

@@ -20,6 +20,7 @@ public class Intake extends SubsystemBase {
     public Intake() {
         intakeMotor.clearFaults();
         intakeArmMotor.clearFaults();
+        intakeArmMotorConfig.smartCurrentLimit(40);
 
         intakeMotor.configure(intakeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         intakeArmMotor.configure(intakeArmMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);       
@@ -27,17 +28,25 @@ public class Intake extends SubsystemBase {
 
     // IM A TERRRRRRIIIIIIBLLLLLLLEEEEEEE PROGRAMMER!!!!!!
 
-    public void moveIntakeAutomatically(double intakeArmSpeed) {
-        intakeArmMotor.set(intakeArmSpeed);
-        if (intakeArmSpeed > 0.00) {
+    public void moveIntakeAutomatically(double desiredIntakeDirection) {
+        intakeArmMotor.set(Constants.speeds.intakeArmMotorSpeed * desiredIntakeDirection);
+        if (desiredIntakeDirection > 0.00) {
+            // Up I think, make rollers stop
             intakeMotor.set(Constants.speeds.intakeRollerMotorSpeed);
         } else {
+            // When the intake is down, keep the rollers spinning constantly
+            // Until it is retracted, at which point stop them
             intakeMotor.set(0.0);
         }
     }
 
-    public void stop() {
-        intakeMotor.set(0.0);
+    // im just including the following method because whatever, even though everything
+    // SHOULD, yes, SHOULD (meaning it probably wont), handle everything automatically
+    public void stopArmMotor() {
         intakeArmMotor.set(0.0);
+    }
+
+    public double getArmEncoderValues() {
+        return intakeArmMotor.getEncoder().getPosition();
     }
 }

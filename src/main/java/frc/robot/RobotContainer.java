@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import java.util.List;
 
 /*
@@ -48,12 +49,16 @@ public class RobotContainer {
   private final Climber climber = new Climber();
   private final Intake intake = new Intake();
 
+
   // Digital outputs to interface with an RGB strip connected
   // to the arduino (if it gets set up), because....
   // LEDS ARE SO COOL
   private final LEDSubsystem lockRobotSignal = new LEDSubsystem(1);
   private final LEDSubsystem zeroHeadingSignal = new LEDSubsystem(2);
   private final LEDSubsystem shootSignal = new LEDSubsystem(3);
+  private final LEDSubsystem readyToIntakeSignal = new LEDSubsystem(4);
+  private final LEDSubsystem intakingSignal = new LEDSubsystem(5);
+  private final LEDSubsystem robotOffGroundSignal = new LEDSubsystem(6);
 
   // The driver's controller
   Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort);
@@ -101,13 +106,15 @@ public class RobotContainer {
         .whileTrue(new Shoot(shooter, shootSignal))
         .onFalse(new InstantCommand(shooter::stop));
     new JoystickButton(m_driverController, OIConstants.extendIntakeButton)
-        .onTrue(new MoveIntake(intake, speeds.intakeArmMotorSpeed));
+        .onTrue(new MoveIntake(intake, -1.00, readyToIntakeSignal));
     new JoystickButton(m_driverController, OIConstants.retractIntakeButton)
-        .onTrue(new MoveIntake(intake, -speeds.intakeArmMotorSpeed));
+        .onTrue(new MoveIntake(intake, 1.00, readyToIntakeSignal));
     new JoystickButton(m_driverController, OIConstants.extendClimberButton)
-        .onTrue(new MoveClimber(climber, -speeds.climberSpeed));
+        .onTrue(new MoveClimber(climber, -1.00))
+        .onFalse(new InstantCommand(climber::stop));
     new JoystickButton(m_driverController, OIConstants.retractClimberButton)
-        .onTrue(new MoveClimber(climber, speeds.climberSpeed));
+        .onTrue(new MoveClimber(climber, 1.00))
+        .onFalse(new InstantCommand(climber::stop));
   }
 
   /**
@@ -116,7 +123,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // Create config for trajectory
+ /*    // Create config for trajectory
     TrajectoryConfig config = new TrajectoryConfig(
         AutoConstants.kMaxSpeedMetersPerSecond,
         AutoConstants.kMaxAccelerationMetersPerSecondSquared)
@@ -159,5 +166,6 @@ public class RobotContainer {
 
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
-  }
+ */     return new PathPlannerAuto("Drive Forward & Shoot");
+    }
 }
