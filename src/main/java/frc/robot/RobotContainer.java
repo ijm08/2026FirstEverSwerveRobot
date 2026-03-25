@@ -23,6 +23,7 @@ import frc.robot.Constants.speeds;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.commands.MoveClimber;
@@ -48,7 +49,7 @@ public class RobotContainer {
   private final Shooter shooter = new Shooter();
   private final Climber climber = new Climber();
   private final Intake intake = new Intake();
-
+  private final VisionSubsystem camera = new VisionSubsystem();
 
   // Digital outputs to interface with an RGB strip connected
   // to the arduino (if it gets set up), because....
@@ -106,9 +107,11 @@ public class RobotContainer {
         .whileTrue(new Shoot(shooter, shootSignal))
         .onFalse(new InstantCommand(shooter::stop));
     new JoystickButton(m_driverController, OIConstants.extendIntakeButton)
-        .onTrue(new MoveIntake(intake, -1.00, readyToIntakeSignal));
+        .onTrue(new MoveIntake(intake, -1.00, readyToIntakeSignal))
+        .onFalse(new InstantCommand(intake::stopArmMotor));
     new JoystickButton(m_driverController, OIConstants.retractIntakeButton)
-        .onTrue(new MoveIntake(intake, 1.00, readyToIntakeSignal));
+        .onTrue(new MoveIntake(intake, 1.00, readyToIntakeSignal))
+        .onFalse(new InstantCommand(intake::stopArmMotor));
     new JoystickButton(m_driverController, OIConstants.extendClimberButton)
         .onTrue(new MoveClimber(climber, -1.00))
         .onFalse(new InstantCommand(climber::stop));
@@ -123,7 +126,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
- /*    // Create config for trajectory
+    // Create config for trajectory
     TrajectoryConfig config = new TrajectoryConfig(
         AutoConstants.kMaxSpeedMetersPerSecond,
         AutoConstants.kMaxAccelerationMetersPerSecondSquared)
@@ -166,6 +169,8 @@ public class RobotContainer {
 
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
- */     return new PathPlannerAuto("Drive Forward & Shoot");
+   
+
+// return new PathPlannerAuto("Drive Forward & Shoot");
     }
 }

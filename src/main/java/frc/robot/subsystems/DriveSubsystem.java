@@ -56,18 +56,19 @@ public class DriveSubsystem extends SubsystemBase {
   // The gyro sensor
     private final ADIS16448_IMU m_gyro = new ADIS16448_IMU(ADIS16448_IMU.IMUAxis.kZ, SPI.Port.kMXP, ADIS16448_IMU.CalibrationTime._1s);
 
-  Translation2d[] modulePositions = {
+  /* Translation2d[] modulePositions = {
     new Translation2d(DriveConstants.kWheelBase / 2, DriveConstants.kTrackWidth / 2),
     new Translation2d(DriveConstants.kWheelBase / 2, -DriveConstants.kTrackWidth / 2),
     new Translation2d(-DriveConstants.kWheelBase / 2, DriveConstants.kTrackWidth / 2),
     new Translation2d(-DriveConstants.kWheelBase / 2, -DriveConstants.kTrackWidth / 2)
-  };
+  }; */
+
   // Setting up slew rates for each axis
   private final SlewRateLimiter xLimited = new SlewRateLimiter(0.8);
   private final SlewRateLimiter yLimited = new SlewRateLimiter(0.8);
   private final SlewRateLimiter rotLimited = new SlewRateLimiter(2);
 
-  private final RobotConfig config = new RobotConfig(22.67, 1.404074611, new ModuleConfig(0.0336, 0.5, 1.0, DCMotor.getNeoVortex(1), 40, 1), modulePositions);
+  // private final RobotConfig config = new RobotConfig(22.67, 1.404074611, new ModuleConfig(0.0336, 0.5, 1.0, DCMotor.getNeoVortex(1), 40, 1), modulePositions);
 
   private final Field2d m_field = new Field2d();
 
@@ -84,34 +85,38 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
-    // final RobotConfig config;
+/*     final RobotConfig config;
     SmartDashboard.putData("Field", m_field);
     try {
-      // config = new RobotConfig(22.67, 1.404074611, new ModuleConfig(0.0336, 0.5, 1.0, DCMotor.getNeoVortex(1), 40, 1), modulePositions);
+      config = RobotConfig.fromGUISettings();
     } catch (Exception e) {
       e.printStackTrace();
-    }
+    } */
     // Usage reporting for MAXSwerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
-    AutoBuilder.configure(
-        this::getPose,
-        this::resetOdometry,
-        this::getRobotRelativeSpeeds,
-        (speeds, feedforwards) -> driveRobotRelative(speeds),
-        new PPHolonomicDriveController(
-          new PIDConstants(1.0, 0.0, 0.0),
-          new PIDConstants(1.0, 0.0, 0.0)
-        ),
-        config, 
-        () -> {
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent()) {
-          return alliance.get() == DriverStation.Alliance.Red;
-        }
-        return false;
-      },
-      this
-    );
+/*  AutoBuilder.configure(
+            this::getPose, // Robot pose supplier
+            this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+            this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+            (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+            new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+            ),
+            config, // The robot configuration
+            () -> {
+              // Boolean supplier that controls when the path will be mirrored for the red alliance
+              // This will flip the path being followed to the red side of the field.
+              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+              var alliance = DriverStation.getAlliance();
+              if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+              }
+              return false;
+            },
+            this // Reference to this subsystem to set requirements
+    ); */
   }
 
   @Override

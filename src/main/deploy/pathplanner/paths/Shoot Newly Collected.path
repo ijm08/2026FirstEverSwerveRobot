@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.7571408166650389,
-        "y": 3.9706737588652468
+        "x": 7.095394144144144,
+        "y": 2.3292680180180185
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0200225225225226,
-        "y": 3.973716216216217
+        "x": 6.227207207207207,
+        "y": 2.2475563063063064
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Path 2 to 3"
     },
     {
       "anchor": {
-        "x": 3.030236486486487,
-        "y": 3.9706737588652468
+        "x": 3.0200225225225226,
+        "y": 4.019679054054055
       },
       "prevControl": {
-        "x": 2.463361486486487,
-        "y": 3.9788231981981985
+        "x": 2.4327195945945945,
+        "y": 1.9564583333333339
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Path 1 to 2"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,17 +33,23 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Shoot preloaded",
+      "name": "Retract Intake",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "Shoot Loaded",
       "waypointRelativePos": 1.0,
       "endWaypointRelativePos": null,
       "command": null
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 0.5,
-    "maxAcceleration": 0.5,
-    "maxAngularVelocity": 180.0,
-    "maxAngularAcceleration": 180.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
@@ -55,7 +61,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -179.28384005452966
   },
   "useDefaultConstraints": false
 }
