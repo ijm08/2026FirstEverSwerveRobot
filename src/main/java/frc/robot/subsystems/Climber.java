@@ -12,10 +12,10 @@ import frc.robot.Constants.subsystemCanIds;
 import frc.robot.Constants.speeds;
 
 public class Climber extends SubsystemBase {
-    SparkMax rightMotor = new SparkMax(subsystemCanIds.climberMotorRight, MotorType.kBrushless);
-    SparkMax leftMotor = new SparkMax(subsystemCanIds.climberMotorLeft, MotorType.kBrushless);
+    private SparkMax rightMotor = new SparkMax(subsystemCanIds.climberMotorRight, MotorType.kBrushless);
+    private SparkMax leftMotor = new SparkMax(subsystemCanIds.climberMotorLeft, MotorType.kBrushless);
     
-    Spark pushingOutMotor = new Spark(1);
+    private Spark pushingOutMotor = new Spark(1);
     
     SparkMaxConfig rightMotorConfig = new SparkMaxConfig();
     SparkMaxConfig leftMotorConfig = new SparkMaxConfig();

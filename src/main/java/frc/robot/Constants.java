@@ -127,6 +127,7 @@ public final class Constants {
     public static final int upperRightShooterMotor = 9;
     public static final int upperLeftShooterMotor = 10;
     public static final int lowerShooterMotor = 11;
+    public static final int highShooterMotor = 17;
     // Intake (Arm and intake rollers)
     public static final int intakeMotor = 12;
     public static final int intakeArmMotor = 13;
@@ -137,10 +138,10 @@ public final class Constants {
   public static final class speeds {
     // Im just picking random values for now since our team is quite slow at building stuff
     // Everything is pretty slow for now (should be)
-    public static final double shooterMotorSpeed = 0.5;
-    public static final double kickerMotorSpeed = 0.25;
+    public static final double shooterMotorSpeed = 0.8;
+    public static final double kickerMotorSpeed = 0.5;
     public static final double intakeArmMotorSpeed = 0.2;
-    public static final double intakeRollerMotorSpeed = -0.2;
+    public static final double intakeRollerMotorSpeed = -0.3;
     public static final double climberSpeed = 0.5;
   }
   public static final class encoderPositions {

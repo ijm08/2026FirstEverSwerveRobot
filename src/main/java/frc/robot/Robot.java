@@ -23,7 +23,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private LEDSubsystem enabledSignal = new LEDSubsystem(4);
+  private LEDSubsystem enabledSignal = new LEDSubsystem(7);
 
   /**
    * This function is run when the robot is first started up and should be used for any

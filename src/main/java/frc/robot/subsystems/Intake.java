@@ -12,8 +12,8 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
-    SparkMax intakeArmMotor = new SparkMax(Constants.subsystemCanIds.intakeArmMotor, MotorType.kBrushless);
-    SparkFlex intakeMotor = new SparkFlex(Constants.subsystemCanIds.intakeMotor, MotorType.kBrushless);
+    private SparkMax intakeArmMotor = new SparkMax(Constants.subsystemCanIds.intakeArmMotor, MotorType.kBrushless);
+    private SparkFlex intakeMotor = new SparkFlex(Constants.subsystemCanIds.intakeMotor, MotorType.kBrushless);
 
     SparkMaxConfig intakeArmMotorConfig = new SparkMaxConfig();
     SparkFlexConfig intakeMotorConfig = new SparkFlexConfig();
@@ -29,21 +29,31 @@ public class Intake extends SubsystemBase {
     // IM A TERRRRRRIIIIIIBLLLLLLLEEEEEEE PROGRAMMER!!!!!!
 
     public void moveIntakeAutomatically(double desiredIntakeDirection) {
-        intakeArmMotor.set(Constants.speeds.intakeArmMotorSpeed * desiredIntakeDirection);
-        if (desiredIntakeDirection > 0.00) {
+        //intakeArmMotor.set(Constants.speeds.intakeArmMotorSpeed * desiredIntakeDirection);
+        //if (desiredIntakeDirection > 0.00) {
             // Up I think, make rollers stop
-            intakeMotor.set(Constants.speeds.intakeRollerMotorSpeed);
-        } else {
+            //intakeMotor.set(Constants.speeds.intakeRollerMotorSpeed);
+        //} else {
             // When the intake is down, keep the rollers spinning constantly
             // Until it is retracted, at which point stop them
-            intakeMotor.set(0.0);
-        }
+            //intakeMotor.set(0.0);
+        //}
+    }
+
+    public void moveIntakeMan() {
+        intakeMotor.set(-0.3);
+    }
+
+    public void stop() {
+        intakeMotor.set(0.0);
     }
 
     // im just including the following method because whatever, even though everything
     // SHOULD, yes, SHOULD (meaning it probably wont), handle everything automatically
     public void stopArmMotor() {
-        intakeArmMotor.set(0.0);
+        // intakeArmMotor.set(0.0);
+
+        intakeMotor.set(0.0);
     }
 
     public double getArmEncoderValues() {

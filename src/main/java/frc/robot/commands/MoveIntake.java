@@ -23,7 +23,7 @@ public class MoveIntake extends Command {
 
     @Override 
     public void execute() {
-        intake.moveIntakeAutomatically(dir);
+        intake.moveIntakeMan();
     }
 
     @Override
@@ -33,6 +33,7 @@ public class MoveIntake extends Command {
         } else {
             intakeSignal.turnOffChannel();
         }
+        intake.stop();
     }
 
     @Override
