@@ -130,7 +130,8 @@ public final class Constants {
     public static final int highShooterMotor = 17;
     // Intake (Arm and intake rollers)
     public static final int intakeMotor = 12;
-    public static final int intakeArmMotor = 13;
+    public static final int leftIntakeArmMotor = 13;
+    public static final int rightIntakeArmMotor = 18;
     // Climber 
     public static final int climberMotorRight = 14;
     public static final int climberMotorLeft = 15;
@@ -141,7 +142,7 @@ public final class Constants {
     public static final double shooterMotorSpeed = 0.8;
     public static final double kickerMotorSpeed = 0.5;
     public static final double intakeArmMotorSpeed = 0.2;
-    public static final double intakeRollerMotorSpeed = -0.3;
+    public static final double intakeRollerMotorSpeed = -0.6;
     public static final double climberSpeed = 0.5;
   }
   public static final class encoderPositions {

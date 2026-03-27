@@ -23,17 +23,16 @@ public class MoveIntake extends Command {
 
     @Override 
     public void execute() {
-        intake.moveIntakeMan();
+
     }
 
     @Override
     public void end(boolean isInterrupted) {
-        if (dir < 0.00) {
-            intakeSignal.sendSignalToArduino();
-        } else {
-            intakeSignal.turnOffChannel();
-        }
-        intake.stop();
+        //if (dir < 0.00) {
+        //    intakeSignal.sendSignalToArduino();
+        //} else {
+        //    intakeSignal.turnOffChannel();
+        //}
     }
 
     @Override

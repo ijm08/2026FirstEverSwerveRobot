@@ -106,12 +106,25 @@ public class RobotContainer {
     new JoystickButton(m_driverController, OIConstants.shootButton)
         .whileTrue(new Shoot(shooter, shootSignal))
         .onFalse(new InstantCommand(shooter::stop));
+        // EXTEND (arm down + toggle rollers ON)
     new JoystickButton(m_driverController, OIConstants.extendIntakeButton)
-        .onTrue(new MoveIntake(intake, -1.00, readyToIntakeSignal))
-        .onFalse(new InstantCommand(intake::stopArmMotor));
+        .whileTrue(new RunCommand(
+            () -> intake.setArmSpeed(-Constants.speeds.intakeArmMotorSpeed),
+            intake))
+        .onFalse(new InstantCommand(() -> {
+            intake.setArmSpeed(0.0);
+            intake.setRollers(true); // turn rollers ON
+        }));
+
+    // RETRACT (arm up + toggle rollers OFF)
     new JoystickButton(m_driverController, OIConstants.retractIntakeButton)
-        .onTrue(new MoveIntake(intake, 1.00, readyToIntakeSignal))
-        .onFalse(new InstantCommand(intake::stopArmMotor));
+        .whileTrue(new RunCommand(
+            () -> intake.setArmSpeed(Constants.speeds.intakeArmMotorSpeed),
+            intake))
+        .onFalse(new InstantCommand(() -> {
+            intake.setArmSpeed(0.0);
+            intake.setRollers(false); // turn rollers OFF
+        }));
     new JoystickButton(m_driverController, OIConstants.extendClimberButton)
         .onTrue(new MoveClimber(climber, -1.00))
         .onFalse(new InstantCommand(climber::stop));
@@ -171,6 +184,6 @@ public class RobotContainer {
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
   */  
 
-    return new PathPlannerAuto("Drive Forward & Shoot");
+    return new PathPlannerAuto("Auto 1");
     }
 }

@@ -12,18 +12,32 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
-    private SparkMax intakeArmMotor = new SparkMax(Constants.subsystemCanIds.intakeArmMotor, MotorType.kBrushless);
+    private SparkMax leftIntakeArmMotor = new SparkMax(Constants.subsystemCanIds.leftIntakeArmMotor, MotorType.kBrushless);
+    private SparkMax rightIntakeArmMotor = new SparkMax(Constants.subsystemCanIds.rightIntakeArmMotor, MotorType.kBrushless);
     private SparkFlex intakeMotor = new SparkFlex(Constants.subsystemCanIds.intakeMotor, MotorType.kBrushless);
 
-    SparkMaxConfig intakeArmMotorConfig = new SparkMaxConfig();
+    SparkMaxConfig leftIntakeArmMotorConfig = new SparkMaxConfig();
+    SparkMaxConfig rightIntakeArmMotorConfig = new SparkMaxConfig();
     SparkFlexConfig intakeMotorConfig = new SparkFlexConfig();
+
+    private boolean rollersOn = false;
+
     public Intake() {
         intakeMotor.clearFaults();
-        intakeArmMotor.clearFaults();
-        intakeArmMotorConfig.smartCurrentLimit(40);
+        leftIntakeArmMotor.clearFaults();
+        rightIntakeArmMotor.clearFaults();
+        leftIntakeArmMotorConfig.smartCurrentLimit(40);
+        rightIntakeArmMotorConfig.smartCurrentLimit(40);
+
+        rightIntakeArmMotorConfig.follow(leftIntakeArmMotor, true);
+
+        rightIntakeArmMotorConfig.apply(rightIntakeArmMotorConfig);
+        leftIntakeArmMotorConfig.apply(leftIntakeArmMotorConfig);
 
         intakeMotor.configure(intakeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        intakeArmMotor.configure(intakeArmMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);       
+        leftIntakeArmMotor.configure(leftIntakeArmMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);       
+        rightIntakeArmMotor.configure(rightIntakeArmMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);       
+
     }
 
     // IM A TERRRRRRIIIIIIBLLLLLLLEEEEEEE PROGRAMMER!!!!!!
@@ -40,12 +54,18 @@ public class Intake extends SubsystemBase {
         //}
     }
 
-    public void moveIntakeMan() {
-        intakeMotor.set(-0.3);
+    public void setRollers(boolean on) {
+        rollersOn = on;
+        intakeMotor.set(on ? -0.3 : 0.0);
     }
 
-    public void stop() {
-        intakeMotor.set(0.0);
+    public void setArmSpeed(double speed) {
+        leftIntakeArmMotor.set(speed);
+    } 
+
+    public void toggleRollers() {
+        rollersOn = !rollersOn;
+        setRollers(rollersOn);
     }
 
     // im just including the following method because whatever, even though everything
@@ -57,6 +77,6 @@ public class Intake extends SubsystemBase {
     }
 
     public double getArmEncoderValues() {
-        return intakeArmMotor.getEncoder().getPosition();
+        return leftIntakeArmMotor.getEncoder().getPosition();
     }
 }

@@ -11,6 +11,6 @@ public class VisionSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-
+        
     }
 }
