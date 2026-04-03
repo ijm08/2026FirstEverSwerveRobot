@@ -15,6 +15,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -33,8 +34,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.List;
 
 /*
@@ -61,6 +66,8 @@ public class RobotContainer {
   private final LEDSubsystem intakingSignal = new LEDSubsystem(5);
   private final LEDSubsystem robotOffGroundSignal = new LEDSubsystem(6);
 
+  private final SendableChooser<Command> autoChooser;
+
   // The driver's controller
   Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort);
 
@@ -68,6 +75,17 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+
+    this.autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Choices", autoChooser);
+
+    NamedCommands.registerCommand("Shoot preloaded", new Shoot(shooter, shootSignal));
+    NamedCommands.registerCommand("WaitThreeSeconds", new WaitCommand(3.0));
+    NamedCommands.registerCommand("Stop Shooter", new InstantCommand(shooter::stop));
+    NamedCommands.registerCommand("Extend Intake", new MoveIntake(intake, -1.00, readyToIntakeSignal));
+    NamedCommands.registerCommand("Retract Intake", new MoveIntake(intake, 1.00, readyToIntakeSignal));
+    // NamedCommands.registerCommand("Stop Intake", new InstantCommand(intake::stopArmMotor));
+
     // Configure the button bindings
     configureButtonBindings();
 
@@ -75,13 +93,65 @@ public class RobotContainer {
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
-        new RunCommand(
-            () -> m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveXYDeadband),
-                -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveXYDeadband),
-                -MathUtil.applyDeadband(m_driverController.getTwist(), OIConstants.kDriveZDeadband),
-                true),
-            m_robotDrive));
+        new RunCommand( () -> {
+            double rot = 0; 
+            double yaw;
+            double avgYaw;
+            double totalYaw = 0;
+            int tagID;
+            int count = 0;
+
+            if (m_driverController.getTrigger()) {
+                var result = camera.gResult();
+                var targets = result.getTargets();
+                
+                if (result.hasTargets()) {
+                    if (targets.size() > 2) {
+                        for (var target : targets) {
+                            if (target.getPoseAmbiguity() < 0.2) {
+                                totalYaw += target.getYaw();
+                                count++;
+                            }
+                        }
+                        if (count > 0) {
+                            avgYaw = totalYaw / count;
+                            rot = avgYaw * 0.02;
+                            if (Math.abs(avgYaw) < 1.0) {
+                                rot = 0;
+                            }
+                        } else {
+                            rot = 0;
+                            // yaw = result.getBestTarget().getYaw();
+                            // rot = yaw * 0.02;
+                        }
+                    } else {
+                        // Only 2 tags were seen, eventually this will align with the tag 
+                        // at the CENTRE OF THE HUB  
+                        for (var target : targets) {
+                            tagID = target.getFiducialId();
+                            if (tagID == 26 || tagID == 10) {
+                               yaw = target.getYaw();
+                               rot = yaw * 0.02;
+                               break;
+                            }
+                        } 
+                    }
+
+                } else {
+                    rot = 0;
+                }
+            } else {
+                rot = -MathUtil.applyDeadband(m_driverController.getTwist(), OIConstants.kDriveZDeadband);
+            }
+
+            m_robotDrive.drive(         
+                    -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveXYDeadband),
+                    -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveXYDeadband),
+                    rot, true);
+
+        }, 
+        m_robotDrive)
+    );
   }
 
   /**
@@ -107,7 +177,7 @@ public class RobotContainer {
         .whileTrue(new Shoot(shooter, shootSignal))
         .onFalse(new InstantCommand(shooter::stop));
         // EXTEND (arm down + toggle rollers ON)
-    new JoystickButton(m_driverController, OIConstants.extendIntakeButton)
+  /*   new JoystickButton(m_driverController, OIConstants.extendIntakeButton)
         .whileTrue(new RunCommand(
             () -> intake.setArmSpeed(-Constants.speeds.intakeArmMotorSpeed),
             intake))
@@ -124,13 +194,20 @@ public class RobotContainer {
         .onFalse(new InstantCommand(() -> {
             intake.setArmSpeed(0.0);
             intake.setRollers(false); // turn rollers OFF
-        }));
+        })); */
     new JoystickButton(m_driverController, OIConstants.extendClimberButton)
         .onTrue(new MoveClimber(climber, -1.00))
         .onFalse(new InstantCommand(climber::stop));
     new JoystickButton(m_driverController, OIConstants.retractClimberButton)
         .onTrue(new MoveClimber(climber, 1.00))
         .onFalse(new InstantCommand(climber::stop));
+    new JoystickButton(m_driverController, OIConstants.extendIntakeButton)
+        .whileTrue(new MoveIntake(intake, 1.00, readyToIntakeSignal))
+        .onFalse(new InstantCommand(intake::stopArmMotor));
+    // RETRACT (arm up + toggle rollers OFF)
+    new JoystickButton(m_driverController, OIConstants.retractIntakeButton)
+        .whileTrue(new MoveIntake(intake, -1.00, readyToIntakeSignal))
+        .onFalse(new InstantCommand(intake::stopArmMotor));
   }
 
   /**
@@ -184,6 +261,6 @@ public class RobotContainer {
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
   */  
 
-    return new PathPlannerAuto("Auto 1");
+    return autoChooser.getSelected();
     }
 }

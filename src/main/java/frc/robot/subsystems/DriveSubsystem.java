@@ -23,13 +23,14 @@ import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
-import edu.wpi.first.math.geometry.Translation2d;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.estimator.PoseEstimator;
+import org.photonvision.PhotonCamera;
+import frc.robot.Constants.AutoConstants;
 
 public class DriveSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
@@ -55,8 +56,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   // The gyro sensor
     private final ADIS16448_IMU m_gyro = new ADIS16448_IMU(ADIS16448_IMU.IMUAxis.kZ, SPI.Port.kMXP, ADIS16448_IMU.CalibrationTime._1s);
-
-  /* Translation2d[] modulePositions = {
+  
+    /* Translation2d[] modulePositions = {
     new Translation2d(DriveConstants.kWheelBase / 2, DriveConstants.kTrackWidth / 2),
     new Translation2d(DriveConstants.kWheelBase / 2, -DriveConstants.kTrackWidth / 2),
     new Translation2d(-DriveConstants.kWheelBase / 2, DriveConstants.kTrackWidth / 2),
@@ -75,7 +76,7 @@ public class DriveSubsystem extends SubsystemBase {
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
-      Rotation2d.fromDegrees(m_gyro.getAngle()),
+      Rotation2d.fromDegrees(-m_gyro.getAngle()),  // NO TOUCHIE TOUCHIE, MATHEMATICIANS USE CCW POSITIVE FOR SOME WEIRD *** REASON
       new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -85,6 +86,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
+    SmartDashboard.putNumber("Robot-Centric Heading:", getHeading());
     RobotConfig config = null;
     SmartDashboard.putData("Field", m_field);
     try {
@@ -100,8 +102,8 @@ public class DriveSubsystem extends SubsystemBase {
             this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
             new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(0.04, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(1, 0.0, 0.0) // Rotation PID constants
+                    new PIDConstants(AutoConstants.kTranslationProportionalGain, AutoConstants.kTranslationIntegralGain, AutoConstants.kTranslationDerivativeGain), // Translation PID constants 
+                    new PIDConstants(AutoConstants.kTurningProportionalGain, AutoConstants.kTurningIntegralGain, AutoConstants.kTurningDerivativeGain) // Rotation PID constants
             ),
             config, // The robot configuration
             () -> {
@@ -123,13 +125,14 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     // Update the odometry in the periodic block
     m_odometry.update(
-        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        Rotation2d.fromDegrees(-m_gyro.getAngle()),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
+    
   }
 
   /**
@@ -147,10 +150,11 @@ public class DriveSubsystem extends SubsystemBase {
    * @param pose The pose to which to set the odometry.
    */
   public void resetOdometry(Pose2d pose) {
-    System.out.println(getHeading());
-    System.out.println(pose.getRotation());
+    // System.out.println(getHeading());
+    // System.out.println(pose.getRotation());
+    m_gyro.reset();
     m_odometry.resetPosition(
-        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        Rotation2d.fromDegrees(-m_gyro.getAngle()),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -170,7 +174,7 @@ public class DriveSubsystem extends SubsystemBase {
    *                      field.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    System.out.println(getHeading());
+    // System.out.println(getHeading());
     // Convert the commanded speeds into the correct units for the drivetrain
     double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;

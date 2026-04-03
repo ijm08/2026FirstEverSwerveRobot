@@ -26,7 +26,7 @@ public final class Constants {
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 0.25;
+    public static final double kMaxSpeedMetersPerSecond = 0.5;
     public static final double kMaxAngularSpeed = Math.PI/5 ; // radians per second
 
     // Chassis configuration
@@ -56,6 +56,16 @@ public final class Constants {
     public static final int RearLeftTurningCANId = 8;
     public static final int FrontRightTurningCANId = 4;
     public static final int RearRightTurningCANId = 5;
+
+    //PID Gains for the drive train. These are unrelated to Path Planner's path finding
+    // as these gains simply control any errors with the wheels maintaining a desired rotation and velocity setpoint
+    public static final double kTranslationP = 0.04;
+    public static final double kTranslationI = 0.0;
+    public static final double kTranslationD = 0.0;
+
+    public static final double kSteeringP = 1.00;
+    public static final double kSteeringI = 0.0;
+    public static final double kSteeringD = 0.0;
 
     // -1 is reversed, 1 not
     public static final double kGyroReversed = -1.0;
@@ -94,27 +104,33 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 0.3;
+    // Constants for the old REV MAX Swerve java template code that was 
+    // Originally taken from the internet
+    // These are no longer needed as we now use Path Planner which handles velocity/
+    // Acceleration constraints in the GUI
+
+    /*  public static final double kMaxSpeedMetersPerSecond = 0.3;
     public static final double kMaxAccelerationMetersPerSecondSquared = 0.3;
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI/5;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI/5;
 
     public static final double kPXController = 1;
     public static final double kPYController = 1;
-    public static final double kPThetaController = 0.00;
-
-    //PID Gains
-    public static final double kProportionalGain = 0.04;
-    public static final double kIntegralGain = 0;
-    public static final double kDerivativeGain = 0;
-
-    public static final double kTurningProportionalGain = 1;
-    public static final double kTurningIntegralGain = 0;
-    public static final double kTurningDerivativeGain = 0; 
-
+    public static final double kPThetaController = 0.00; 
+    
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    */
+
+    //PID Gains for Path Planner NO TOUCHIE TOUCHIE!!!
+    public static final double kTranslationProportionalGain = 3.0;
+    public static final double kTranslationIntegralGain = 0.0;
+    public static final double kTranslationDerivativeGain = 0.025;
+
+    public static final double kTurningProportionalGain = 1.0;
+    public static final double kTurningIntegralGain = 0.0;
+    public static final double kTurningDerivativeGain = 0.05; 
   }
 
   public static final class NeoMotorConstants {
@@ -139,19 +155,19 @@ public final class Constants {
   public static final class speeds {
     // Im just picking random values for now since our team is quite slow at building stuff
     // Everything is pretty slow for now (should be)
-    public static final double shooterMotorSpeed = 0.8;
-    public static final double kickerMotorSpeed = 0.5;
+    public static final double shooterMotorSpeed = 0.75;
+    public static final double kickerMotorSpeed = 0.6;
     public static final double intakeArmMotorSpeed = 0.2;
-    public static final double intakeRollerMotorSpeed = -0.6;
+    public static final double intakeRollerMotorSpeed = -0.4;
     public static final double climberSpeed = 0.5;
   }
   public static final class encoderPositions {
     // Random numbers for now
     public static final double climberExtended = -0.67;
     public static final double climberRetracted = 0.067;
-    public static final double climberEncoderTolerance = 0.00;
-    public static final double intakeExtended = -0.25;
-    public static final double intakeRetracted = 0.00;
+    public static final double climberEncoderTolerance = 1.5;
+    public static final double intakeExtended = -22.0;
+    public static final double intakeRetracted = -12.0;
     public static final double intakeTolerance = 0.067; 
   }
 }

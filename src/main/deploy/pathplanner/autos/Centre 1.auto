@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Drive Forward & Shoot"
+            "pathName": "Move Back & Shoot"
           }
         },
         {
@@ -23,27 +23,27 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Stop Shooter"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Collect From N-Zone"
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Extend Intake"
+            "waitTime": 1.5
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "Shoot Newly Collected"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Retract Intake"
           }
         },
         {

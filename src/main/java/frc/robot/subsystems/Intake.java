@@ -41,21 +41,25 @@ public class Intake extends SubsystemBase {
     }
 
     // IM A TERRRRRRIIIIIIBLLLLLLLEEEEEEE PROGRAMMER!!!!!!
+    // -23 start, -11 up
 
     public void moveIntakeAutomatically(double desiredIntakeDirection) {
-        //intakeArmMotor.set(Constants.speeds.intakeArmMotorSpeed * desiredIntakeDirection);
-        //if (desiredIntakeDirection > 0.00) {
+        System.out.println(getArmEncoderValues());
+        leftIntakeArmMotor.set(Constants.speeds.intakeArmMotorSpeed * desiredIntakeDirection);
+        if (desiredIntakeDirection > 0.00) {
             // Up I think, make rollers stop
-            //intakeMotor.set(Constants.speeds.intakeRollerMotorSpeed);
-        //} else {
+            intakeMotor.set(Constants.speeds.intakeRollerMotorSpeed);
+        } else {
             // When the intake is down, keep the rollers spinning constantly
-            // Until it is retracted, at which point stop them
-            //intakeMotor.set(0.0);
-        //}
+          // Until it is retracted, at which point stop them
+            intakeMotor.set(0.0);
+        }
     }
 
-    public void setRollers(boolean on) {
-        rollersOn = on;
+    // CODE FOR TESTING
+
+/*     public void setRollers(boolean on) {
+        rollersOn = on;                                                           
         intakeMotor.set(on ? -0.3 : 0.0);
     }
 
@@ -66,14 +70,14 @@ public class Intake extends SubsystemBase {
     public void toggleRollers() {
         rollersOn = !rollersOn;
         setRollers(rollersOn);
-    }
+    } */
 
     // im just including the following method because whatever, even though everything
     // SHOULD, yes, SHOULD (meaning it probably wont), handle everything automatically
     public void stopArmMotor() {
         // intakeArmMotor.set(0.0);
 
-        intakeMotor.set(0.0);
+        leftIntakeArmMotor.set(0.0);
     }
 
     public double getArmEncoderValues() {
