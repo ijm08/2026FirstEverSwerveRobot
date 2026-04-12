@@ -28,11 +28,16 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.math.estimator.PoseEstimator;
-import org.photonvision.PhotonCamera;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.PhotonPoseEstimator;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import frc.robot.Constants.AutoConstants;
 
 public class DriveSubsystem extends SubsystemBase {
+  private VisionSubsystem m_camera;  
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
       DriveConstants.FrontLeftDrivingCANId,
@@ -74,18 +79,28 @@ public class DriveSubsystem extends SubsystemBase {
   private final Field2d m_field = new Field2d();
 
   // Odometry class for tracking robot pose
-  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
+  SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
       DriveConstants.kDriveKinematics,
-      Rotation2d.fromDegrees(-m_gyro.getAngle()),  // NO TOUCHIE TOUCHIE, MATHEMATICIANS USE CCW POSITIVE FOR SOME WEIRD *** REASON
+      Rotation2d.fromDegrees(-m_gyro.getAngle()),  // NO TOUCHIE TOUCHIE, MATHEMATICIANS USE COUNTERCLOCKWISE-POSITIVE FOR SOME WEIRD *** REASON
       new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
           m_rearLeft.getPosition(),
           m_rearRight.getPosition()
-      });
+      }, 
+      // Create a new pose that serves as the initial pose of the odometry (0, 0, 0)
+      new Pose2d(),
+
+      // State std devs (will tune these later)
+      VecBuilder.fill(0.05, 0.05, Math.toRadians(30)),
+
+      // Vision std devs (will tune these later)
+      VecBuilder.fill(0.5, 0.5, Math.toRadians(30))  
+      );
 
   /** Creates a new DriveSubsystem. */
-  public DriveSubsystem() {
+  public DriveSubsystem(VisionSubsystem camera) {
+    m_camera = camera;
     SmartDashboard.putNumber("Robot-Centric Heading:", getHeading());
     RobotConfig config = null;
     SmartDashboard.putData("Field", m_field);
@@ -124,7 +139,7 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    m_odometry.update(
+    m_poseEstimator.update(
         Rotation2d.fromDegrees(-m_gyro.getAngle()),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
@@ -132,7 +147,28 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
-    
+    var result = m_camera.gResult();
+
+    // Check if there are April Tag targets present
+    if (result.hasTargets()) {
+      // Update photon visions pose estimator using the positions
+      // of the april tags in "result" so that it can internally provide an estimated pose
+      // var estimatedPose = m_camera.updateEstimatedPose(result);
+
+      // if (m_camera.photonPoseEstimator.estimatedPose.isPresent()) {
+        // if the estimated pose from PhotonVision is available, create a variable and get it
+        // var visionPose = estimatedPose.get();
+
+        // The most important method in all of this:
+        // Uses Photon Vision's estimated pose to estimated the robot's
+        // Real position on the field more accurately
+
+        // m_poseEstimator.addVisionMeasurement(visionPose.estimatedPose.toPose2d(), visionPose.timestampSeconds);
+
+      // }
+    }
+
+    m_field.setRobotPose(getPose());
   }
 
   /**
@@ -141,7 +177,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return The pose.
    */
   public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
+    return m_poseEstimator.getEstimatedPosition();
   }
 
   /**
@@ -153,7 +189,7 @@ public class DriveSubsystem extends SubsystemBase {
     // System.out.println(getHeading());
     // System.out.println(pose.getRotation());
     m_gyro.reset();
-    m_odometry.resetPosition(
+    m_poseEstimator.resetPosition(
         Rotation2d.fromDegrees(-m_gyro.getAngle()),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),

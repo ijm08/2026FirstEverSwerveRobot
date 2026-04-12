@@ -26,10 +26,10 @@ public class Intake extends SubsystemBase {
         intakeMotor.clearFaults();
         leftIntakeArmMotor.clearFaults();
         rightIntakeArmMotor.clearFaults();
-        leftIntakeArmMotorConfig.smartCurrentLimit(40);
-        rightIntakeArmMotorConfig.smartCurrentLimit(40);
+        leftIntakeArmMotorConfig.smartCurrentLimit(80);
+        rightIntakeArmMotorConfig.smartCurrentLimit(80);
 
-        rightIntakeArmMotorConfig.follow(leftIntakeArmMotor, true);
+        // rightIntakeArmMotorConfig.follow(leftIntakeArmMotor, true);
 
         rightIntakeArmMotorConfig.apply(rightIntakeArmMotorConfig);
         leftIntakeArmMotorConfig.apply(leftIntakeArmMotorConfig);
@@ -46,12 +46,13 @@ public class Intake extends SubsystemBase {
     public void moveIntakeAutomatically(double desiredIntakeDirection) {
         System.out.println(getArmEncoderValues());
         leftIntakeArmMotor.set(Constants.speeds.intakeArmMotorSpeed * desiredIntakeDirection);
+        rightIntakeArmMotor.set(-1 * (Constants.speeds.intakeArmMotorSpeed * desiredIntakeDirection));
         if (desiredIntakeDirection > 0.00) {
             // Up I think, make rollers stop
             intakeMotor.set(Constants.speeds.intakeRollerMotorSpeed);
         } else {
             // When the intake is down, keep the rollers spinning constantly
-          // Until it is retracted, at which point stop them
+            // Until it is retracted, at which point stop them
             intakeMotor.set(0.0);
         }
     }
@@ -78,6 +79,7 @@ public class Intake extends SubsystemBase {
         // intakeArmMotor.set(0.0);
 
         leftIntakeArmMotor.set(0.0);
+        rightIntakeArmMotor.set(0.0);
     }
 
     public double getArmEncoderValues() {

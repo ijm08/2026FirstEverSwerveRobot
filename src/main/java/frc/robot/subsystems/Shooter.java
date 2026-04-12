@@ -10,37 +10,57 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase {
-    private SparkMax rightShooterMotor = new SparkMax(Constants.subsystemCanIds.upperRightShooterMotor, MotorType.kBrushless);
-    private SparkMax leftShooterMotor = new SparkMax(Constants.subsystemCanIds.upperLeftShooterMotor, MotorType.kBrushless);
-    private SparkMax kickerMotor = new SparkMax(Constants.subsystemCanIds.lowerShooterMotor, MotorType.kBrushless);
-    private SparkMax topShooterMotor = new SparkMax(Constants.subsystemCanIds.highShooterMotor, MotorType.kBrushless);
-
+    private SparkMax rightShooterMotor = new SparkMax(Constants.subsystemCanIds.lowerRightShooterMotor, MotorType.kBrushless);
+    private SparkMax leftShooterMotor = new SparkMax(Constants.subsystemCanIds.lowerLeftShooterMotor, MotorType.kBrushless);
+    private SparkMax kickerMotor = new SparkMax(Constants.subsystemCanIds.kickerMotor, MotorType.kBrushless);
+    private SparkMax topRightShooterMotor = new SparkMax(Constants.subsystemCanIds.topRightShooterMotor, MotorType.kBrushless);
+    private SparkMax topLeftShooterMotor = new SparkMax(Constants.subsystemCanIds.topLeftShooterMotor, MotorType.kBrushless);
+    private SparkMax rollerMotor = new SparkMax(Constants.subsystemCanIds.shooterRollerMotor, MotorType.kBrushed);
+    
     SparkMaxConfig shooterRightMotorConfig = new SparkMaxConfig();
     SparkMaxConfig shooterLeftMotorConfig = new SparkMaxConfig();
     SparkMaxConfig kickerMotorConfig = new SparkMaxConfig();  
-    SparkMaxConfig shooterTopMotorConfig = new SparkMaxConfig();
+    SparkMaxConfig topRightShooterMotorConfig = new SparkMaxConfig();
+    SparkMaxConfig topLeftShooterMotorConfig = new SparkMaxConfig();
+    SparkMaxConfig rollerMotorConfig = new SparkMaxConfig();
     
     public Shooter() {
+        topLeftShooterMotorConfig.follow(topRightShooterMotor, true);
+        topRightShooterMotorConfig.apply(topRightShooterMotorConfig);
+        topLeftShooterMotorConfig.apply(topLeftShooterMotorConfig);
         shooterLeftMotorConfig.follow(rightShooterMotor, true);
         shooterLeftMotorConfig.apply(shooterLeftMotorConfig);
         shooterRightMotorConfig.apply(shooterRightMotorConfig);
-        shooterTopMotorConfig.apply(shooterTopMotorConfig);
+        rollerMotorConfig.apply(rollerMotorConfig);
 
         rightShooterMotor.configure(shooterRightMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         leftShooterMotor.configure(shooterLeftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         kickerMotor.configure(kickerMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        topShooterMotor.configure(shooterTopMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        topRightShooterMotor.configure(topRightShooterMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        topLeftShooterMotor.configure(topLeftShooterMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        rollerMotor.configure(rollerMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    public void shootFuel() {
-        rightShooterMotor.set(Constants.speeds.shooterMotorSpeed);
+    public void shootFuel(boolean isTracked, double desiredSpeed) {
+        // If the camera is tracking the april tags on the hub, use the passed calculated
+        // shooter speed in Shoot.java. Otherwise, use the default shooter speed
+        if (isTracked == true) {
+            rightShooterMotor.set(-desiredSpeed);
+            topRightShooterMotor.set(desiredSpeed);
+
+        } else {
+            rightShooterMotor.set(-Constants.speeds.defaultShooterMotorSpeed);
+            topRightShooterMotor.set(Constants.speeds.defaultShooterMotorSpeed);
+
+        }
+        rollerMotor.set(Constants.speeds.shooterRollerMotorSpeed);
         kickerMotor.set(Constants.speeds.kickerMotorSpeed);
-        topShooterMotor.set(Constants.speeds.shooterMotorSpeed);
     }
 
     public void stop() {
         rightShooterMotor.set(0.0);
         kickerMotor.set(0.0);
-        topShooterMotor.set(0.0);
+        topRightShooterMotor.set(0.0);
+        rollerMotor.set(0.0);
     }
 }

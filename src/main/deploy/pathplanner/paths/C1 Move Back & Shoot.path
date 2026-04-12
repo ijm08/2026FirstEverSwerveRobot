@@ -16,11 +16,11 @@
     },
     {
       "anchor": {
-        "x": 2.3510078828828838,
+        "x": 1.5,
         "y": 4.050320945945947
       },
       "prevControl": {
-        "x": 2.080337837837838,
+        "x": 1.229329954954955,
         "y": 4.029893018018019
       },
       "nextControl": null,
@@ -34,9 +34,51 @@
   "eventMarkers": [
     {
       "name": "Shoot preloaded",
-      "waypointRelativePos": 0.9959893048128345,
+      "waypointRelativePos": 1.0,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot preloaded"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 3.0
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Stop Shooter"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Extend Intake"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.85
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Stop Intake"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {

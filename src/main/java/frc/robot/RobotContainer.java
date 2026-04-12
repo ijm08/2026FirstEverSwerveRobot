@@ -50,12 +50,11 @@ import java.util.List;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final VisionSubsystem camera = new VisionSubsystem();
+  private final DriveSubsystem m_robotDrive = new DriveSubsystem(camera);
   private final Shooter shooter = new Shooter();
   private final Climber climber = new Climber();
   private final Intake intake = new Intake();
-  private final VisionSubsystem camera = new VisionSubsystem();
-
   // Digital outputs to interface with an RGB strip connected
   // to the arduino (if it gets set up), because....
   // LEDS ARE SO COOL
@@ -63,8 +62,10 @@ public class RobotContainer {
   private final LEDSubsystem zeroHeadingSignal = new LEDSubsystem(2);
   private final LEDSubsystem shootSignal = new LEDSubsystem(3);
   private final LEDSubsystem readyToIntakeSignal = new LEDSubsystem(4);
-  private final LEDSubsystem intakingSignal = new LEDSubsystem(5);
-  private final LEDSubsystem robotOffGroundSignal = new LEDSubsystem(6);
+  // F*** YOU INTAKING SIGNAL
+  // private final LEDSubsystem intakingSignal = new LEDSubsystem(5);
+  // F*** YOU CLIMB SIGNAL
+  // private final LEDSubsystem robotOffGroundSignal = new LEDSubsystem(6);
 
   private final SendableChooser<Command> autoChooser;
 
@@ -75,16 +76,16 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    NamedCommands.registerCommand("Shoot preloaded", new Shoot(shooter, shootSignal, camera));
+    NamedCommands.registerCommand("Shoot Loaded", new Shoot(shooter, shootSignal, camera));
+    NamedCommands.registerCommand("WaitThreeSeconds", new WaitCommand(3.0));
+    NamedCommands.registerCommand("Stop Shooter", new InstantCommand(shooter::stop));
+    NamedCommands.registerCommand("Extend Intake", new MoveIntake(intake, 1.00, readyToIntakeSignal));
+    NamedCommands.registerCommand("Retract Intake", new MoveIntake(intake, -1.00, readyToIntakeSignal));
+    NamedCommands.registerCommand("Stop Intake", new InstantCommand(intake::stopArmMotor));
 
     this.autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Choices", autoChooser);
-
-    NamedCommands.registerCommand("Shoot preloaded", new Shoot(shooter, shootSignal));
-    NamedCommands.registerCommand("WaitThreeSeconds", new WaitCommand(3.0));
-    NamedCommands.registerCommand("Stop Shooter", new InstantCommand(shooter::stop));
-    NamedCommands.registerCommand("Extend Intake", new MoveIntake(intake, -1.00, readyToIntakeSignal));
-    NamedCommands.registerCommand("Retract Intake", new MoveIntake(intake, 1.00, readyToIntakeSignal));
-    // NamedCommands.registerCommand("Stop Intake", new InstantCommand(intake::stopArmMotor));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -174,7 +175,7 @@ public class RobotContainer {
             () -> m_robotDrive.zeroHeading(zeroHeadingSignal),
             m_robotDrive));
     new JoystickButton(m_driverController, OIConstants.shootButton)
-        .whileTrue(new Shoot(shooter, shootSignal))
+        .whileTrue(new Shoot(shooter, shootSignal, camera))
         .onFalse(new InstantCommand(shooter::stop));
         // EXTEND (arm down + toggle rollers ON)
   /*   new JoystickButton(m_driverController, OIConstants.extendIntakeButton)

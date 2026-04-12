@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import frc.robot.Constants.subsystemCanIds;
 import frc.robot.Constants.speeds;
 
+// The climber that never got built this year...
+// ALL THAT TIME & EFFORT TO WRITE THIS AND IT WAS FOR NOTHING!!!!
+
 public class Climber extends SubsystemBase {
     private SparkMax rightMotor = new SparkMax(subsystemCanIds.climberMotorRight, MotorType.kBrushless);
     private SparkMax leftMotor = new SparkMax(subsystemCanIds.climberMotorLeft, MotorType.kBrushless);

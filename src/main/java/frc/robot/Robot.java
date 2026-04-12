@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
+import edu.wpi.first.wpilibj.DriverStation;
 
 
 /**
@@ -24,6 +25,8 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
 
   private LEDSubsystem enabledSignal = new LEDSubsystem(7);
+  private LEDSubsystem enabledAutoBlue = new LEDSubsystem(8);
+  private LEDSubsystem enabledAutoRed = new LEDSubsystem(9);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -56,6 +59,8 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     enabledSignal.turnOffChannel();
+    enabledAutoBlue.turnOffChannel();
+    enabledAutoRed.turnOffChannel();
   }
 
   @Override
@@ -64,6 +69,12 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    var alliance = DriverStation.getAlliance();
+    if (alliance.get() == DriverStation.Alliance.Red) {
+      enabledAutoBlue.sendSignalToArduino();
+    } else {
+      enabledAutoRed.sendSignalToArduino();
+    }
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     /*

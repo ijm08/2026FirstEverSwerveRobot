@@ -4,7 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -24,6 +27,11 @@ public final class Constants {
     public static final int kDriverControllerPort = 1;
   }
   public static final class DriveConstants {
+    // The position of the camera relative to the centre-floor of the robot
+    public static final Transform3d kRobotCameraPosition = new Transform3d(
+      new Translation3d(0.25, 0.0, 0.5),
+      new Rotation3d(0, Math.toRadians(60), 0)
+    );
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
     public static final double kMaxSpeedMetersPerSecond = 0.5;
@@ -140,23 +148,26 @@ public final class Constants {
   public static final class subsystemCanIds {
     // CAN IDs for all motors not part of the Swerve Subsystem
     // Shooter
-    public static final int upperRightShooterMotor = 9;
-    public static final int upperLeftShooterMotor = 10;
-    public static final int lowerShooterMotor = 11;
-    public static final int highShooterMotor = 17;
+    public static final int lowerRightShooterMotor = 40;
+    public static final int lowerLeftShooterMotor = 41;
+    public static final int kickerMotor = 29;
+    public static final int topRightShooterMotor = 30;
+    public static final int topLeftShooterMotor = 31;
+    public static final int shooterRollerMotor = 13;
     // Intake (Arm and intake rollers)
     public static final int intakeMotor = 12;
-    public static final int leftIntakeArmMotor = 13;
-    public static final int rightIntakeArmMotor = 18;
+    public static final int leftIntakeArmMotor = 10;
+    public static final int rightIntakeArmMotor = 11;
     // Climber 
-    public static final int climberMotorRight = 14;
-    public static final int climberMotorLeft = 15;
+    public static final int climberMotorRight = 60;
+    public static final int climberMotorLeft = 61;
   }
   public static final class speeds {
     // Im just picking random values for now since our team is quite slow at building stuff
     // Everything is pretty slow for now (should be)
-    public static final double shooterMotorSpeed = 0.75;
-    public static final double kickerMotorSpeed = 0.6;
+    public static final double defaultShooterMotorSpeed = 0.7;
+    public static final double shooterRollerMotorSpeed = -1.0;
+    public static final double kickerMotorSpeed = 0.5;
     public static final double intakeArmMotorSpeed = 0.2;
     public static final double intakeRollerMotorSpeed = -0.4;
     public static final double climberSpeed = 0.5;
