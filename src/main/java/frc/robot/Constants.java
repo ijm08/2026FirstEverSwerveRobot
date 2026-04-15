@@ -29,7 +29,7 @@ public final class Constants {
   public static final class DriveConstants {
     // The position of the camera relative to the centre-floor of the robot
     public static final Transform3d kRobotCameraPosition = new Transform3d(
-      new Translation3d(0.25, 0.0, 0.5),
+      new Translation3d(0.361, 0.0, 0.431),
       new Rotation3d(0, Math.toRadians(60), 0)
     );
     // Driving Parameters - Note that these are not the maximum capable speeds of
@@ -165,7 +165,8 @@ public final class Constants {
   public static final class speeds {
     // Im just picking random values for now since our team is quite slow at building stuff
     // Everything is pretty slow for now (should be)
-    public static final double defaultShooterMotorSpeed = 0.7;
+    public static final double topShooterMotorSpeed = 1.0;
+    public static final double bottomShooterMotorSpeed = 0.5;
     public static final double shooterRollerMotorSpeed = -1.0;
     public static final double kickerMotorSpeed = 0.5;
     public static final double intakeArmMotorSpeed = 0.2;

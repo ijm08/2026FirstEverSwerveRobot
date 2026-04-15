@@ -8,7 +8,7 @@ import frc.robot.Constants;
 public class MoveIntake extends Command { 
     Intake intake;
     double dir;
-    private boolean isIntakeDown;
+    private static boolean isIntakeDown = false;
     // private double firstEncoderReading;
     // private double distMoved;
     LEDSubsystem intakeSignal;
@@ -16,7 +16,6 @@ public class MoveIntake extends Command {
     public MoveIntake(Intake subsystem, double desiredDirection, LEDSubsystem desiredIntakeSignal) {
         addRequirements(subsystem);
         dir = desiredDirection;
-        isIntakeDown = false;
         intake = subsystem;
         // firstEncoderReading = 0;
         // distMoved = 0.0;
@@ -25,20 +24,29 @@ public class MoveIntake extends Command {
 
     @Override
     public void initialize() {
+        System.out.println(intake.getArmEncoderValues());
         // firstEncoderReading = intake.getArmEncoderValues();
     }
 
     @Override 
     public void execute() {
-        intake.moveIntakeAutomatically(dir);
+        if (dir > 0.00 && isIntakeDown == false) {
+           intake.moveIntakeAutomatically(dir);
+        } else if (dir < 0.00 && isIntakeDown == true) {
+           intake.moveIntakeAutomatically(dir);
+        }
     }
 
     @Override
     public void end(boolean isInterrupted) {
-        if (dir < 0.00) {
-          intakeSignal.sendSignalToArduino();
+        System.out.println(intake.getArmEncoderValues());
+        intake.stopArmMotor();
+        if (dir > 0.00) {
+          isIntakeDown = true;
+          intakeSignal.sendSignalToArduino("intakeDown");
         } else {
-          intakeSignal.turnOffChannel();
+          isIntakeDown = false;
+          intakeSignal.sendSignalToArduino("intakeUp");
         }
     }
 

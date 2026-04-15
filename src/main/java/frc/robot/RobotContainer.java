@@ -58,10 +58,17 @@ public class RobotContainer {
   // Digital outputs to interface with an RGB strip connected
   // to the arduino (if it gets set up), because....
   // LEDS ARE SO COOL
-  private final LEDSubsystem lockRobotSignal = new LEDSubsystem(1);
-  private final LEDSubsystem zeroHeadingSignal = new LEDSubsystem(2);
-  private final LEDSubsystem shootSignal = new LEDSubsystem(3);
-  private final LEDSubsystem readyToIntakeSignal = new LEDSubsystem(4);
+
+  private final LEDSubsystem leds = new LEDSubsystem();
+
+  // F*** YOU CLIMB SIGNAL
+  // private final LEDSubsystem lockRobotSignal = new LEDSubsystem(1);
+  // F*** YOU CLIMB SIGNAL
+  // private final LEDSubsystem zeroHeadingSignal = new LEDSubsystem(2);
+  // F*** YOU CLIMB SIGNAL
+  // private final LEDSubsystem shootSignal = new LEDSubsystem(3);
+  // F*** YOU CLIMB SIGNAL
+  // private final LEDSubsystem readyToIntakeSignal = new LEDSubsystem(4);
   // F*** YOU INTAKING SIGNAL
   // private final LEDSubsystem intakingSignal = new LEDSubsystem(5);
   // F*** YOU CLIMB SIGNAL
@@ -76,13 +83,13 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    NamedCommands.registerCommand("Shoot preloaded", new Shoot(shooter, shootSignal, camera));
-    NamedCommands.registerCommand("Shoot Loaded", new Shoot(shooter, shootSignal, camera));
+    NamedCommands.registerCommand("Shoot preloaded", new Shoot(shooter, leds, camera));
+    NamedCommands.registerCommand("Shoot Loaded", new Shoot(shooter, leds, camera));
     NamedCommands.registerCommand("WaitThreeSeconds", new WaitCommand(3.0));
     NamedCommands.registerCommand("Stop Shooter", new InstantCommand(shooter::stop));
-    NamedCommands.registerCommand("Extend Intake", new MoveIntake(intake, 1.00, readyToIntakeSignal));
-    NamedCommands.registerCommand("Retract Intake", new MoveIntake(intake, -1.00, readyToIntakeSignal));
-    NamedCommands.registerCommand("Stop Intake", new InstantCommand(intake::stopArmMotor));
+    NamedCommands.registerCommand("Extend Intake", new MoveIntake(intake, 1.00, leds).withTimeout(2.5));
+    NamedCommands.registerCommand("Retract Intake", new MoveIntake(intake, -1.00, leds).withTimeout(2.5));
+    // NamedCommands.registerCommand("Stop Intake", new InstantCommand(intake::stopArmMotor));
 
     this.autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Choices", autoChooser);
@@ -130,7 +137,7 @@ public class RobotContainer {
                         // at the CENTRE OF THE HUB  
                         for (var target : targets) {
                             tagID = target.getFiducialId();
-                            if (tagID == 26 || tagID == 10) {
+                            if (tagID == 26 || tagID == 10 || tagID == 9) {
                                yaw = target.getYaw();
                                rot = yaw * 0.02;
                                break;
@@ -167,20 +174,20 @@ public class RobotContainer {
   private void configureButtonBindings() {
     new JoystickButton(m_driverController, OIConstants.lockRobotButton)
         .whileTrue(new RunCommand(
-            () -> m_robotDrive.lockRobot(lockRobotSignal),
+            () -> m_robotDrive.lockRobot(leds),
             m_robotDrive))
-        .onFalse(new InstantCommand(lockRobotSignal::turnOffChannel));
+        .onFalse(new InstantCommand(() -> leds.sendSignalToArduino("robotUnlocked"), leds));
     new JoystickButton(m_driverController, OIConstants.zeroHeadingButton)
         .onTrue(new InstantCommand(
-            () -> m_robotDrive.zeroHeading(zeroHeadingSignal),
+            () -> m_robotDrive.zeroHeading(leds),
             m_robotDrive));
     new JoystickButton(m_driverController, OIConstants.shootButton)
-        .whileTrue(new Shoot(shooter, shootSignal, camera))
+        .whileTrue(new Shoot(shooter, leds, camera))
         .onFalse(new InstantCommand(shooter::stop));
         // EXTEND (arm down + toggle rollers ON)
   /*   new JoystickButton(m_driverController, OIConstants.extendIntakeButton)
         .whileTrue(new RunCommand(
-            () -> intake.setArmSpeed(-Constants.speeds.intakeArmMotorSpeed),
+            () -> intake.setArmSpeed(-Constants.speeds.intakeArgmMotorSpeed),
             intake))
         .onFalse(new InstantCommand(() -> {
             intake.setArmSpeed(0.0);
@@ -203,11 +210,11 @@ public class RobotContainer {
         .onTrue(new MoveClimber(climber, 1.00))
         .onFalse(new InstantCommand(climber::stop));
     new JoystickButton(m_driverController, OIConstants.extendIntakeButton)
-        .whileTrue(new MoveIntake(intake, 1.00, readyToIntakeSignal))
+        .onTrue(new MoveIntake(intake, 1.00, leds).withTimeout(2.0))
         .onFalse(new InstantCommand(intake::stopArmMotor));
     // RETRACT (arm up + toggle rollers OFF)
     new JoystickButton(m_driverController, OIConstants.retractIntakeButton)
-        .whileTrue(new MoveIntake(intake, -1.00, readyToIntakeSignal))
+        .onTrue(new MoveIntake(intake, -1.00, leds).withTimeout(2.0))
         .onFalse(new InstantCommand(intake::stopArmMotor));
   }
 

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.233282657657657,
-        "y": 2.610152027027027
+        "x": 7.274138513513513,
+        "y": 2.523333333333334
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.36509572072072,
-        "y": 2.528440315315315
+        "x": 6.405951576576576,
+        "y": 2.4416216216216218
       },
       "isLocked": false,
       "linkedName": "Path 1-2"
@@ -36,12 +36,7 @@
       "name": "Shoot Loaded",
       "waypointRelativePos": 1.0,
       "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Shoot Loaded"
-        }
-      }
+      "command": null
     }
   ],
   "globalConstraints": {

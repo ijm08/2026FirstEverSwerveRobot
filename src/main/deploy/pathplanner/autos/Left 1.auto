@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Extend Intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "L1 Move Back & Shoot"
@@ -19,7 +25,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 3.0
+            "waitTime": 5.0
           }
         },
         {
@@ -29,45 +35,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Extend Intake"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.85
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Intake"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "L1 Collect From N-Zone"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Retract Intake"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.85
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stop Intake"
           }
         },
         {
@@ -85,7 +55,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 5.0
+            "waitTime": 7.0
           }
         },
         {

@@ -29,11 +29,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.PhotonPoseEstimator;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import frc.robot.Constants.AutoConstants;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -70,8 +66,8 @@ public class DriveSubsystem extends SubsystemBase {
   }; */
 
   // Setting up slew rates for each axis
-  private final SlewRateLimiter xLimited = new SlewRateLimiter(0.8);
-  private final SlewRateLimiter yLimited = new SlewRateLimiter(0.8);
+  private final SlewRateLimiter xLimited = new SlewRateLimiter(1.25);
+  private final SlewRateLimiter yLimited = new SlewRateLimiter(1.25);
   private final SlewRateLimiter rotLimited = new SlewRateLimiter(2);
 
   // private final RobotConfig config = new RobotConfig(22.67, 1.404074611, new ModuleConfig(0.0336, 0.5, 1.0, DCMotor.getNeoVortex(1), 40, 1), modulePositions);
@@ -153,19 +149,19 @@ public class DriveSubsystem extends SubsystemBase {
     if (result.hasTargets()) {
       // Update photon visions pose estimator using the positions
       // of the april tags in "result" so that it can internally provide an estimated pose
-      // var estimatedPose = m_camera.updateEstimatedPose(result);
+      var estimatedPose = m_camera.photonPoseEstimator.update(result);
 
-      // if (m_camera.photonPoseEstimator.estimatedPose.isPresent()) {
+      if (estimatedPose.isPresent()) {
         // if the estimated pose from PhotonVision is available, create a variable and get it
-        // var visionPose = estimatedPose.get();
+        var visionPose = estimatedPose.get();
 
         // The most important method in all of this:
         // Uses Photon Vision's estimated pose to estimated the robot's
         // Real position on the field more accurately
 
-        // m_poseEstimator.addVisionMeasurement(visionPose.estimatedPose.toPose2d(), visionPose.timestampSeconds);
+        m_poseEstimator.addVisionMeasurement(visionPose.estimatedPose.toPose2d(), visionPose.timestampSeconds);
 
-      // }
+      }
     }
 
     m_field.setRobotPose(getPose());
@@ -237,7 +233,7 @@ public class DriveSubsystem extends SubsystemBase {
    * Sets the wheels into an X formation to prevent movement.
    */
   public void lockRobot(LEDSubsystem subsystem) {
-    subsystem.sendSignalToArduino();
+    subsystem.sendSignalToArduino("robotLocked");
     m_frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
     m_frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
     m_rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
@@ -268,7 +264,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Zeroes the heading of the robot. */
   public void zeroHeading(LEDSubsystem subsystem) {
-    subsystem.sendSignalToArduino();
+    subsystem.sendSignalToArduino("headingZeroed");
     m_gyro.reset();
   }
 

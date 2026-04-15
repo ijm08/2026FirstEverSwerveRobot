@@ -5,15 +5,16 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.math.geometry.Transform3d;
+import frc.robot.Constants;
 
 public class Shoot extends Command {
     private final Shooter shooter;
     private final LEDSubsystem shootSignal;
     private VisionSubsystem camera = new VisionSubsystem();
 
-    private final double shooterMinSpeed = 0.5; // Needs to be tuned later once testing starts
+/*     private final double shooterMinSpeed = 0.5; // Needs to be tuned later once testing starts
     private final double shooterMaxSpeed = 1.0;
-    private double shooterSpeed = 0.0;
+ */    // private double shooterSpeed = 0.0;
 
     public Shoot(Shooter subsystem, LEDSubsystem desiredLEDSubsystem, VisionSubsystem processingCamera) {
         shootSignal = desiredLEDSubsystem;
@@ -30,8 +31,8 @@ public class Shoot extends Command {
     @Override
     public void execute() {
         var result = camera.result;
-        shooter.shootFuel(false, shooterSpeed);
-
+        shooter.shootFuel(false, 0.0);
+        
         /*if (result.hasTargets()) {
             Transform3d transform = result.getBestTarget().getBestCameraToTarget();
             double distance = transform.getTranslation().getZ();
@@ -41,7 +42,7 @@ public class Shoot extends Command {
         } else {
             shooter.shootFuel(false, shooterSpeed);
         } */
-        shootSignal.sendSignalToArduino();
+        shootSignal.sendSignalToArduino("readyToShoot");
     }
 
     @Override
@@ -51,10 +52,10 @@ public class Shoot extends Command {
     
     @Override
     public void end(boolean interrupted) {
-        shootSignal.turnOffChannel();
+        shootSignal.sendSignalToArduino("Shooter stopped");
     }
 
-    private double calculateShooterSpeed(double area) {
+/*     private double calculateShooterSpeed(double area) {
         area = Math.max(area, 0.01);
 
         double speed = 1.0 / area;
@@ -63,5 +64,5 @@ public class Shoot extends Command {
         speed = Math.max(speed, shooterMinSpeed);
 
         return speed;
-    }
+    } */
 }

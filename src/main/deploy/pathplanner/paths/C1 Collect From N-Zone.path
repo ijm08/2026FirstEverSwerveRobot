@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 7.233282657657657,
-        "y": 2.610152027027027
+        "x": 7.274138513513513,
+        "y": 2.523333333333334
       },
       "prevControl": {
-        "x": 6.0535698198198205,
-        "y": 2.6305799549549547
+        "x": 6.0944256756756765,
+        "y": 2.5437612612612615
       },
       "nextControl": null,
       "isLocked": false,
@@ -36,12 +36,7 @@
       "name": "Retract Intake",
       "waypointRelativePos": 1.0,
       "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Retract Intake"
-        }
-      }
+      "command": null
     }
   ],
   "globalConstraints": {

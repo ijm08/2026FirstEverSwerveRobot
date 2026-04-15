@@ -44,7 +44,7 @@ public class Intake extends SubsystemBase {
     // -23 start, -11 up
 
     public void moveIntakeAutomatically(double desiredIntakeDirection) {
-        System.out.println(getArmEncoderValues());
+        // System.out.println(getArmEncoderValues());
         leftIntakeArmMotor.set(Constants.speeds.intakeArmMotorSpeed * desiredIntakeDirection);
         rightIntakeArmMotor.set(-1 * (Constants.speeds.intakeArmMotorSpeed * desiredIntakeDirection));
         if (desiredIntakeDirection > 0.00) {

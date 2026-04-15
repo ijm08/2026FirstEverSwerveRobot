@@ -24,9 +24,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private LEDSubsystem enabledSignal = new LEDSubsystem(7);
-  private LEDSubsystem enabledAutoBlue = new LEDSubsystem(8);
-  private LEDSubsystem enabledAutoRed = new LEDSubsystem(9);
+  private LEDSubsystem enabledSignal = new LEDSubsystem();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -58,9 +56,9 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    enabledSignal.turnOffChannel();
-    enabledAutoBlue.turnOffChannel();
-    enabledAutoRed.turnOffChannel();
+    enabledSignal.sendSignalToArduino("teleopDisabled");
+    enabledSignal.sendSignalToArduino("autoBlueDisabled");
+    enabledSignal.sendSignalToArduino("autoRedDisabled");
   }
 
   @Override
@@ -71,9 +69,9 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     var alliance = DriverStation.getAlliance();
     if (alliance.get() == DriverStation.Alliance.Red) {
-      enabledAutoBlue.sendSignalToArduino();
+      enabledSignal.sendSignalToArduino("enabledAutoBlue");
     } else {
-      enabledAutoRed.sendSignalToArduino();
+      enabledSignal.sendSignalToArduino("enabledAutoRed");
     }
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
@@ -105,7 +103,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    enabledSignal.sendSignalToArduino();
+    enabledSignal.sendSignalToArduino("teleopEnabled");
   }
 
   /** This function is called periodically during operator control. */
@@ -116,7 +114,7 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-    enabledSignal.sendSignalToArduino();
+    enabledSignal.sendSignalToArduino("teleopEnabled");
   }
 
   /** This function is called periodically during test mode. */

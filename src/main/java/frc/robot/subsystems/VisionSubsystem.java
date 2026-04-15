@@ -17,7 +17,7 @@ public class VisionSubsystem extends SubsystemBase {
     public PhotonPipelineResult result;
     private final AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
     public PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, DriveConstants.kRobotCameraPosition);
-    
+
     public VisionSubsystem() {
         processingCamera = new PhotonCamera("Arducam_OV9281_USB_Camera");
     }
@@ -34,8 +34,4 @@ public class VisionSubsystem extends SubsystemBase {
     public PhotonTrackedTarget getTrackedTarget() {
         return result.getBestTarget();
     }
-
-    // public var updateEstimatedPose(PhotonPipelineResult result) {
-        // photonPoseEstimator.update(result);
-    // }
 }
