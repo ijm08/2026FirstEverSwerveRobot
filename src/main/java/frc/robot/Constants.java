@@ -166,11 +166,11 @@ public final class Constants {
     // Im just picking random values for now since our team is quite slow at building stuff
     // Everything is pretty slow for now (should be)
     public static final double topShooterMotorSpeed = 1.0;
-    public static final double bottomShooterMotorSpeed = 0.5;
+    public static final double bottomShooterMotorSpeed = 0.4;
     public static final double shooterRollerMotorSpeed = -1.0;
     public static final double kickerMotorSpeed = 0.5;
     public static final double intakeArmMotorSpeed = 0.2;
-    public static final double intakeRollerMotorSpeed = -0.4;
+    public static final double intakeRollerMotorSpeed = -0.5;
     public static final double climberSpeed = 0.5;
   }
   public static final class encoderPositions {

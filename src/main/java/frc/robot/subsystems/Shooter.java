@@ -59,7 +59,7 @@ public class Shooter extends SubsystemBase {
         // shooter speed in Shoot.java. Otherwise, use the default shooter speed
         if (isTracked == true) {
             rightShooterMotor.set(-desiredSpeed);
-            topRightShooterMotor.set(desiredSpeed);
+            topRightShooterMotor.set(Constants.speeds.topShooterMotorSpeed);
 
         } else {
             rightShooterMotor.set(-Constants.speeds.bottomShooterMotorSpeed);

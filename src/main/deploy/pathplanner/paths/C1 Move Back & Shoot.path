@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 2.1109797297297304,
+        "x": 2.05447695035461,
         "y": 4.050320945945947
       },
       "prevControl": {
-        "x": 1.8403096846846854,
+        "x": 1.7838069053095649,
         "y": 4.029893018018019
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "C1-2-RLYNEW"
     }
   ],
   "rotationTargets": [],
@@ -49,7 +49,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -1.4732777255045044
   },
   "reversed": false,
   "folder": null,

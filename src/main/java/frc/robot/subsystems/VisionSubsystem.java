@@ -20,6 +20,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     public VisionSubsystem() {
         processingCamera = new PhotonCamera("Arducam_OV9281_USB_Camera");
+        
     }
 
     @Override

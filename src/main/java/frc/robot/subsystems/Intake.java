@@ -47,14 +47,14 @@ public class Intake extends SubsystemBase {
         // System.out.println(getArmEncoderValues());
         leftIntakeArmMotor.set(Constants.speeds.intakeArmMotorSpeed * desiredIntakeDirection);
         rightIntakeArmMotor.set(-1 * (Constants.speeds.intakeArmMotorSpeed * desiredIntakeDirection));
-        if (desiredIntakeDirection > 0.00) {
+/*         if (desiredIntakeDirection > 0.00) {
             // Up I think, make rollers stop
             intakeMotor.set(Constants.speeds.intakeRollerMotorSpeed);
         } else {
             // When the intake is down, keep the rollers spinning constantly
             // Until it is retracted, at which point stop them
             intakeMotor.set(0.0);
-        }
+        } */
     }
 
     // CODE FOR TESTING
@@ -84,5 +84,9 @@ public class Intake extends SubsystemBase {
 
     public double getArmEncoderValues() {
         return leftIntakeArmMotor.getEncoder().getPosition();
+    }
+
+    public void setIntakeMotor(double speed) {
+        intakeMotor.set(speed);
     }
 }

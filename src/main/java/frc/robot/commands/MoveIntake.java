@@ -24,7 +24,10 @@ public class MoveIntake extends Command {
 
     @Override
     public void initialize() {
-        System.out.println(intake.getArmEncoderValues());
+        if (dir < 0.00 && isIntakeDown == true) {
+            intake.setIntakeMotor(0.0);
+        }
+        // System.out.println(intake.getArmEncoderValues());
         // firstEncoderReading = intake.getArmEncoderValues();
     }
 
@@ -43,10 +46,11 @@ public class MoveIntake extends Command {
         intake.stopArmMotor();
         if (dir > 0.00) {
           isIntakeDown = true;
-          intakeSignal.sendSignalToArduino("intakeDown");
+          intakeSignal.sendSignalToArduino();
+          intake.setIntakeMotor(Constants.speeds.intakeRollerMotorSpeed);
         } else {
           isIntakeDown = false;
-          intakeSignal.sendSignalToArduino("intakeUp");
+          intakeSignal.turnOffChannel();
         }
     }
 

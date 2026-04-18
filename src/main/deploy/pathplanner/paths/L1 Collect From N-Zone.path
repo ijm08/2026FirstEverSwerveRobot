@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.5961430180180183,
+        "x": 1.7,
         "y": 5.316852477477478
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.596143018018019,
+        "x": 2.700000000000001,
         "y": 5.316852477477478
       },
       "isLocked": false,
-      "linkedName": "L-1-2"
+      "linkedName": "L1-RLYNEW"
     },
     {
       "anchor": {
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "L1-2"
+      "linkedName": "L2-RLYNEW"
     }
   ],
   "rotationTargets": [],
@@ -55,7 +55,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -34.09497795476556
+    "rotation": -27.264487941653567
   },
   "useDefaultConstraints": false
 }

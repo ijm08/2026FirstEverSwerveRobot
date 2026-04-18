@@ -12,16 +12,16 @@
         "y": 2.4416216216216218
       },
       "isLocked": false,
-      "linkedName": "Path 1-2"
+      "linkedName": "C2-3-NEW"
     },
     {
       "anchor": {
-        "x": 2.5297522522522526,
-        "y": 4.019679054054055
+        "x": 1.9177836879432624,
+        "y": 4.0591223404255325
       },
       "prevControl": {
-        "x": 1.9424493243243246,
-        "y": 1.9564583333333339
+        "x": 1.3304807600153343,
+        "y": 1.9959016197048118
       },
       "nextControl": null,
       "isLocked": false,
@@ -55,7 +55,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -178.67236804603283
   },
   "useDefaultConstraints": false
 }

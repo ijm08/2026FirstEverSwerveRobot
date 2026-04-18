@@ -6,12 +6,13 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import edu.wpi.first.wpilibj.DriverStation;
-
+import edu.wpi.first.wpilibj.PowerDistribution;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -24,8 +25,10 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private LEDSubsystem enabledSignal = new LEDSubsystem();
+  private LEDSubsystem enabledSignal = new LEDSubsystem(4);
+  private LEDSubsystem autoEnabled = new LEDSubsystem(5);
 
+  private PowerDistribution m_pdp = new PowerDistribution(62, ModuleType.kRev);
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -35,6 +38,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    m_pdp.setSwitchableChannel(true);
   }
 
   /**
@@ -56,9 +60,8 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    enabledSignal.sendSignalToArduino("teleopDisabled");
-    enabledSignal.sendSignalToArduino("autoBlueDisabled");
-    enabledSignal.sendSignalToArduino("autoRedDisabled");
+    enabledSignal.turnOffChannel();
+    autoEnabled.turnOffChannel();
   }
 
   @Override
@@ -69,9 +72,9 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     var alliance = DriverStation.getAlliance();
     if (alliance.get() == DriverStation.Alliance.Red) {
-      enabledSignal.sendSignalToArduino("enabledAutoBlue");
+      autoEnabled.sendSignalToArduino();
     } else {
-      enabledSignal.sendSignalToArduino("enabledAutoRed");
+      autoEnabled.sendSignalToArduino();
     }
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
@@ -103,7 +106,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    enabledSignal.sendSignalToArduino("teleopEnabled");
+    enabledSignal.sendSignalToArduino();
   }
 
   /** This function is called periodically during operator control. */
@@ -114,7 +117,7 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-    enabledSignal.sendSignalToArduino("teleopEnabled");
+    enabledSignal.sendSignalToArduino();
   }
 
   /** This function is called periodically during test mode. */

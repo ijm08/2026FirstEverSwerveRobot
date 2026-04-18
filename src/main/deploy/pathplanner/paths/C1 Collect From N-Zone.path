@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.3510078828828838,
+        "x": 2.05447695035461,
         "y": 4.050320945945947
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.422505630630631,
+        "x": 2.1259746981023575,
         "y": 2.0637049549549555
       },
       "isLocked": false,
-      "linkedName": "Path-1-2"
+      "linkedName": "C1-2-RLYNEW"
     },
     {
       "anchor": {
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Path 1-2"
+      "linkedName": "C2-3-NEW"
     }
   ],
   "rotationTargets": [],
@@ -49,13 +49,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -178.67236804603283
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -1.4732777255045044
   },
   "useDefaultConstraints": false
 }
