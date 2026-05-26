@@ -75,8 +75,8 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    NamedCommands.registerCommand("Shoot preloaded", new Shoot(shooter, shootSignal, camera));
-    NamedCommands.registerCommand("Shoot Loaded", new Shoot(shooter, shootSignal, camera));
+    NamedCommands.registerCommand("Shoot preloaded", new Shoot(shooter, shootSignal, camera, true));
+    NamedCommands.registerCommand("Shoot Loaded", new Shoot(shooter, shootSignal, camera, true));
     NamedCommands.registerCommand("WaitThreeSeconds", new WaitCommand(3.0));
     NamedCommands.registerCommand("Stop Shooter", new InstantCommand(shooter::stop));
     NamedCommands.registerCommand("Extend Intake", new MoveIntake(intake, 1.00, readyToIntakeSignal).withTimeout(2.5));
@@ -129,7 +129,7 @@ public class RobotContainer {
                         // at the CENTRE OF THE HUB  
                         for (var target : targets) {
                             tagID = target.getFiducialId();
-                            if (tagID == 26 || tagID == 10 || tagID == 9) {
+                            if (tagID == 26 || tagID == 10) {
                                yaw = target.getYaw();
                                rot = yaw * 0.02;
                                break;
@@ -174,7 +174,7 @@ public class RobotContainer {
             () -> m_robotDrive.zeroHeading(zeroHeadingSignal),
             m_robotDrive));
     new JoystickButton(m_driverController, OIConstants.shootButton)
-        .whileTrue(new Shoot(shooter, shootSignal, camera))
+        .whileTrue(new Shoot(shooter, shootSignal, camera, false))
         .onFalse(new InstantCommand(shooter::stop));
         // EXTEND (arm down + toggle rollers ON)
   /*   new JoystickButton(m_driverController, OIConstants.extendIntakeButton)
@@ -208,6 +208,8 @@ public class RobotContainer {
     new JoystickButton(m_driverController, OIConstants.retractIntakeButton)
         .onTrue(new MoveIntake(intake, -1.00, readyToIntakeSignal).withTimeout(2.0))
         .onFalse(new InstantCommand(intake::stopArmMotor));
+    
+         
   }
 
   /**

@@ -13,15 +13,17 @@ import frc.robot.Constants;
 public class Shoot extends Command {
     private final Shooter shooter;
     private final LEDSubsystem shootSignal;
+    private boolean isAuto;
     private VisionSubsystem camera = new VisionSubsystem();
 
-    private final double shooterMinSpeed = 0.5; // Needs to be tuned later once testing starts
+    private final double shooterMinSpeed = 0.40; // Needs to be tuned later once testing starts
     private final double shooterMaxSpeed = 1.0;
     private double shooterSpeed = 0.0;
 
-    public Shoot(Shooter subsystem, LEDSubsystem desiredLEDSubsystem, VisionSubsystem processingCamera) {
+    public Shoot(Shooter subsystem, LEDSubsystem desiredLEDSubsystem, VisionSubsystem processingCamera, boolean auto) {
         shootSignal = desiredLEDSubsystem;
         shooter = subsystem;
+        isAuto = auto;
         this.camera = processingCamera;
         addRequirements(subsystem);
     }
@@ -46,6 +48,7 @@ public class Shoot extends Command {
             SmartDashboard.putNumber("Distance", distance);
             SmartDashboard.putNumber("x Dist:", transform.getX());
             SmartDashboard.putNumber("Y Dist", transform.getY());
+            SmartDashboard.putNumber("motor speed", shooterSpeed);
             shooterSpeed = calculateShooterSpeed(distance);
             shooter.shootFuel(true, shooterSpeed);
         } else {
@@ -56,7 +59,11 @@ public class Shoot extends Command {
 
     @Override
     public boolean isFinished() {
-        return false;
+        if (isAuto == true) {
+            return true;
+        } else {
+            return false;
+        }
     }
     
     @Override
@@ -73,7 +80,7 @@ public class Shoot extends Command {
         // m = .5 / 4 = .125
         // b = .25
 
-        double speed = .125 * distance + .25;
+        double speed = .120 * distance + .15;
 
         speed = Math.min(speed, shooterMaxSpeed);
         speed = Math.max(speed, shooterMinSpeed);
